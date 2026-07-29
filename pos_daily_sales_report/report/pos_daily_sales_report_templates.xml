@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_pos_daily_sales_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>État des ventes quotidiennes</h2>
+                        <p>
+                            <strong>Société :</strong> <span t-out="o.company_id.name"/><br/>
+                            <strong>Période :</strong>
+                            <span t-out="o.date_from" t-options="{'widget': 'date'}"/>
+                            au
+                            <span t-out="o.date_to" t-options="{'widget': 'date'}"/><br/>
+                            <strong>Points de vente :</strong>
+                            <t t-if="o.pos_config_ids">
+                                <span t-out="', '.join(o.pos_config_ids.mapped('name'))"/>
+                            </t>
+                            <t t-else="">
+                                <span>Tous</span>
+                            </t>
+                        </p>
+
+                        <table class="table table-sm o_main_table" style="margin-top: 16px;">
+                            <thead>
+                                <tr>
+                                    <th>Jour</th>
+                                    <th class="text-end">Ventes POS</th>
+                                    <th class="text-end">Ventes normales</th>
+                                    <th class="text-end">Total du jour</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.line_ids" t-as="line">
+                                    <td><span t-out="line.day_label"/></td>
+                                    <td class="text-end">
+                                        <span t-out="line.pos_sales" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-out="line.normal_sales" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-out="line.total" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr style="font-weight: bold; border-top: 2px solid #333;">
+                                    <td>Total de la période</td>
+                                    <td class="text-end">
+                                        <span t-out="o.total_pos_sales" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-out="o.total_normal_sales" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-out="o.total_global" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

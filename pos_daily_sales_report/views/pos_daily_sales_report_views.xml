@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_daily_sales_report_wizard_form" model="ir.ui.view">
+        <field name="name">pos.daily.sales.report.wizard.form</field>
+        <field name="model">pos.daily.sales.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="État des ventes quotidiennes">
+                <header>
+                    <button name="action_generate" type="object" string="Générer" class="btn-primary"/>
+                    <button name="action_print_pdf" type="object" string="Imprimer PDF" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>État des ventes quotidiennes</h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <group>
+                            <field name="pos_config_ids" widget="many2many_tags"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Détail par jour" invisible="not has_results">
+                            <field name="line_ids" readonly="1">
+                                <tree editable="bottom" create="false" delete="false">
+                                    <field name="day_label" string="Jour"/>
+                                    <field name="pos_sales" string="Ventes POS" sum="Total"/>
+                                    <field name="normal_sales" string="Ventes normales" sum="Total"/>
+                                    <field name="total" string="Total du jour" sum="Total"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+
+                    <group class="oe_subtotal_footer oe_right" invisible="not has_results">
+                        <field name="total_pos_sales"/>
+                        <field name="total_normal_sales"/>
+                        <field name="total_global" class="oe_subtotal_footer_separator"/>
+                    </group>
+                    <field name="has_results" invisible="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pos_daily_sales_report_wizard" model="ir.actions.act_window">
+        <field name="name">État des ventes quotidiennes</field>
+        <field name="res_model">pos.daily.sales.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+
+    <menuitem id="menu_pos_daily_sales_report_under_pos"
+              name="État des ventes quotidiennes"
+              parent="point_of_sale.menu_point_root"
+              action="action_pos_daily_sales_report_wizard"
+              groups="point_of_sale.group_pos_manager"
+              sequence="80"/>
+
+    <menuitem id="menu_pos_daily_sales_report_under_sale"
+              name="État des ventes quotidiennes"
+              parent="sale.sale_menu_root"
+              action="action_pos_daily_sales_report_wizard"
+              groups="point_of_sale.group_pos_manager"
+              sequence="80"/>
+</odoo>
